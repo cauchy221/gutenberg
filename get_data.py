@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "-p", "--pattern",
         help="Patterns to get only a subset of books.",
-        default='*',
+        default='(222|351|64682|26854|14257)',  # for Maugham, W. Somerset
         type=str)
 
     # update argument

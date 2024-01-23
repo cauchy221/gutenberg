@@ -28,7 +28,7 @@ def cleanup(path, text_dir):
 
 ############
 
-TEXT_START_MARKERS = frozenset((
+TEXT_START_MARKERS = {
     "*END*THE SMALL PRINT",
     "*** START OF THE PROJECT GUTENBERG",
     "*** START OF THIS PROJECT GUTENBERG",
@@ -82,10 +82,10 @@ TEXT_START_MARKERS = frozenset((
     'and the Project Gutenberg Online Distributed Proofreading Team',
     'Mary Meehan, and the Project Gutenberg Online Distributed Proofreading',
     '                this Project Gutenberg edition.',
-))
+}
 
 
-TEXT_END_MARKERS = frozenset((
+TEXT_END_MARKERS = {
     "*** END OF THE PROJECT GUTENBERG",
     "*** END OF THIS PROJECT GUTENBERG",
     "***END OF THE PROJECT GUTENBERG",
@@ -97,6 +97,7 @@ TEXT_END_MARKERS = frozenset((
     "End of this Project Gutenberg",
     "Ende dieses Projekt Gutenberg",
     "        ***END OF THE PROJECT GUTENBERG",
+    "           *** END OF THE PROJECT GUTENBERG",
     "*** END OF THE COPYRIGHTED",
     "End of this is COPYRIGHTED",
     "Ende dieses Etextes ",
@@ -112,11 +113,11 @@ TEXT_END_MARKERS = frozenset((
     "END OF PROJECT GUTENBERG",
     " End of the Project Gutenberg",
     " *** END OF THIS PROJECT GUTENBERG",
-))
+}
 
 
-LEGALESE_START_MARKERS = frozenset(("<<THIS ELECTRONIC VERSION OF",))
-LEGALESE_END_MARKERS = frozenset(("SERVICE THAT CHARGES FOR DOWNLOAD",))
+LEGALESE_START_MARKERS = {"<<THIS ELECTRONIC VERSION OF",}
+LEGALESE_END_MARKERS = {"SERVICE THAT CHARGES FOR DOWNLOAD",}
 
 
 def strip_headers(text):
@@ -147,7 +148,7 @@ def strip_headers(text):
 
         if i <= 600:
             # Check if the header ends here
-            if any(line.startswith(token) for token in TEXT_START_MARKERS):
+            if any(line.strip().startswith(token) for token in TEXT_START_MARKERS):
                 reset = True
 
             # If it's the end of the header, delete the output produced so far.
@@ -159,17 +160,17 @@ def strip_headers(text):
 
         if i >= 100:
             # Check if the footer begins here
-            if any(line.startswith(token) for token in TEXT_END_MARKERS):
+            if any(line.strip().startswith(token) for token in TEXT_END_MARKERS):
                 footer_found = True
 
             # If it's the beginning of the footer, stop output
             if footer_found:
                 break
 
-        if any(line.startswith(token) for token in LEGALESE_START_MARKERS):
+        if any(line.strip().startswith(token) for token in LEGALESE_START_MARKERS):
             ignore_section = True
             continue
-        elif any(line.startswith(token) for token in LEGALESE_END_MARKERS):
+        elif any(line.strip().startswith(token) for token in LEGALESE_END_MARKERS):
             ignore_section = False
             continue
 
